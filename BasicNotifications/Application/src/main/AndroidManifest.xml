@@ -46,6 +46,14 @@
                 <action android:name="com.example.android.basicnotifications.MY_ACTION_MESSAGE_HEARD" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".MessageReplyReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.android.basicnotifications.MY_ACTION_MESSAGE_REPLY" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
