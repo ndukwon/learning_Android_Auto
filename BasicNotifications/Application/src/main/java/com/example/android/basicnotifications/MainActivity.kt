@@ -9,12 +9,23 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.app.RemoteInput
 import android.view.View
 
 /**
  * The entry point to the BasicNotification sample.
  */
 class MainActivity : Activity() {
+
+    companion object {
+        /**
+         * A numeric value that identifies the notification that we'll be sending.
+         * This value needs to be unique within this app, but it doesn't need to be
+         * unique system-wide.
+         */
+        val NOTIFICATION_ID = 1
+    }
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +46,48 @@ class MainActivity : Activity() {
         val intent = Intent(Intent.ACTION_VIEW,
                 Uri.parse("http://developer.android.com/reference/android/app/Notification.html"))
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+
+
+        val thisConversationId = 42
+        val msgHeardIntent = Intent()
+                .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                .setAction("com.example.android.basicnotifications.MY_ACTION_MESSAGE_HEARD")
+                .putExtra("conversation_id", thisConversationId)
+                .setPackage("com.example.android.basicnotifications")       // This can avoid intercepting broadcast by other apps
+
+        val msgHeardPendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                thisConversationId,
+                msgHeardIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val msgReplyIntent = Intent()
+                .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                .setAction("com.example.android.basicnotifications.MY_ACTION_MESSAGE_REPLY")
+                .putExtra("conversation_id", thisConversationId)
+                .setPackage("com.example.android.basicnotifications")       // This can avoid intercepting broadcast by other apps
+
+        val msgReplyPendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                thisConversationId,
+                msgReplyIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val remoteInput = RemoteInput.Builder("voice_reply_key")
+                .setLabel("Prompt text")
+                .build()
+
+        val conversationName = "Duky"
+        val unreadConversation = NotificationCompat.CarExtender.UnreadConversation.Builder(conversationName)
+                .setReadPendingIntent(msgHeardPendingIntent)
+                .setReplyAction(msgReplyPendingIntent, remoteInput)
+
+        unreadConversation.addMessage("Hello there, how are you?")
+                .setLatestTimestamp(System.currentTimeMillis())
+
         // END_INCLUDE(build_action)
+
+
 
         // BEGIN_INCLUDE (build_notification)
         /**
@@ -60,6 +112,11 @@ class MainActivity : Activity() {
         // after the user taps it, rather than remaining until it's explicitly dismissed.
         builder.setAutoCancel(true)
 
+        val builderForCarExtender = NotificationCompat.Builder(this)
+        builderForCarExtender.extend(
+            NotificationCompat.CarExtender().setUnreadConversation(unreadConversation.build())
+        )
+
         /**
          * Build the notification's appearance.
          * Set the large icon, which appears on the left of the notification. In this
@@ -83,23 +140,20 @@ class MainActivity : Activity() {
 
         // END_INCLUDE (build_notification)
 
+
+
         // BEGIN_INCLUDE(send_notification)
         /**
          * Send the notification. This will immediately display the notification icon in the
          * notification bar.
          */
-        val notificationManager = getSystemService(
-                Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
-        // END_INCLUDE(send_notification)
-    }
+//        val notificationManager = getSystemService(
+//                Context.NOTIFICATION_SERVICE) as NotificationManager
+//        notificationManager.notify(NOTIFICATION_ID, builder.build())
 
-    companion object {
-        /**
-         * A numeric value that identifies the notification that we'll be sending.
-         * This value needs to be unique within this app, but it doesn't need to be
-         * unique system-wide.
-         */
-        val NOTIFICATION_ID = 1
+        // An standard Manager(android.app.NotificationManager under API 10) may not know Car extensions
+        val notificationManagerCompat = NotificationManagerCompat.from(applicationContext)
+        notificationManagerCompat.notify(NOTIFICATION_ID, builderForCarExtender.build())
+        // END_INCLUDE(send_notification)
     }
 }
