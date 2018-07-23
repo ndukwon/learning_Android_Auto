@@ -2,6 +2,7 @@
 - Class: https://www.udacity.com/course/android-auto-development--ud875C
 - Developer guide: https://developer.android.com/training/auto/
 
+
 ### 1. Requirements
 * Android 5.0(API 21) or higher can support Android Auto
     * "CarExtender" is needed.
@@ -40,27 +41,28 @@
 >   </automotiveApp>
 >   ~~~
 
-* 2.3. Messaging Notification part
->   0. given conversation ID
->   1. an **Intent** to be sent when **TTS finished reading the message**
->   2. a **Receiver** to receive the TTS-finished intent.
->   3. an **Intent** to be sent when the **reply action is started**.
->   4. a **Receiver** to receive the reply-action intent.
->   5. a **RemoteInput** to type text by voice input
->   5. Packing each item below within **PendingIntent**
->       * Conversation id + TTS-finished intent
->       * Conversation id + reply-action intent
->   6. Packing all together within **CarExtender.UnreadConversation**
->       * Conversation name
->       * TTS-finished intent
->       * reply-action intent
->       * message(s)
->   7. Packing the UnreadConversation within **CarExtender**
->   8. Packing the CarExtender within **NotificationCompat.builder**
->   9. Notify the NotificationCompat by **NotificationManagerCompat**
+###3. Messaging Notification part
+* 3.0. given conversation ID
+* 3.1. an **Intent** to be sent when **TTS finished reading the message**
+* 3.2. a **Receiver** to receive the TTS-finished intent.
+* 3.3. an **Intent** to be sent when the **reply action is started**.
+* 3.4. a **Receiver** to receive the reply-action intent.
+* 3.5. a **RemoteInput** to type text by voice input
+* 3.6. Packing each item below within **PendingIntent**
+    * Conversation id + TTS-finished intent
+    * Conversation id + reply-action intent
+* 3.7. Packing all together within **CarExtender.UnreadConversation**
+    * Conversation name
+    * TTS-finished intent
+    * reply-action intent
+    * message(s)
+* 3.8. Packing the UnreadConversation within **CarExtender**
+* 3.9. Packing the CarExtender within **NotificationCompat.builder**
+* 3.10. Notify the NotificationCompat by **NotificationManagerCompat**
 
 
-* 2.4. Audio part....
+###4. Audio part....
+* 4.1. 
 
 
 
