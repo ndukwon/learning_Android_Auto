@@ -26,6 +26,7 @@
             android:enabled="true"
             android:exported="true">
 
+            <!-- Notifying this app can be used as media browser service. -->
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowseService" />
             </intent-filter>
