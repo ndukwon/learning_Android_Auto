@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:value="@xml/automotive_app_desc" />
@@ -21,6 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".TestMusicBrowserService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
